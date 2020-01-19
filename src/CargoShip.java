@@ -1,14 +1,20 @@
 public class CargoShip {
     private int id;
-    private int weight;
-    private int length;
+    private String name;
+    private int weight; //Tons
+    private int length; //Meter
     private String color;
-    private int cargoCapacity;
-    private int fuelRemaining;
+    private int cargoOnBoard;//
+    private int cargoCapacity;//Tons
+    private int fuelRemaining; //percent %
     private String bearing;
-    private int [] position;
+    private int [] position;// coordinates x y
+    private int max_speed; //Knots
 
-    public CargoShip(int id, int weight, int length, String color, int cargoCapacity, int fuelRemaining, String bearing, int[] position) {
+
+
+
+    public CargoShip(int id, int weight, int length, String color, int cargoOnBoard, int cargoCapacity, int max_speed, int fuelRemaining, String bearing, int[] position, String name ) {
         this.id = id;
         this.weight = weight;
         this.length = length;
@@ -17,8 +23,29 @@ public class CargoShip {
         this.fuelRemaining = fuelRemaining;
         this.bearing = bearing;
         this.position = position;
+        this.max_speed = max_speed;
+        this.cargoOnBoard = cargoOnBoard;
+        this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setCargoOnBoard(int cargoOnBoard) {
+        this.cargoOnBoard = cargoOnBoard;
+    }
+    public int getCargoOnBoard() {
+        return cargoOnBoard;
+    }
+    public void setMax_speed(int max_speed) {
+        this.max_speed = max_speed;
+    }
+    public int getMax_speed() {
+        return max_speed;
+    }
     public void setPosition(int[] position) {
         this.position = position;
     }
@@ -82,7 +109,16 @@ public class CargoShip {
     public void setId(int id) {
         this.id = id;
     }
+
+    public void loadCargo(int cargo) {
+        setCargoOnBoard(getCargoOnBoard() + cargo);
+    }
+    public void unLoadCargo(int cargo) {
+        setCargoOnBoard((getCargoOnBoard() - cargo));
+    }
 }
+
+
 
 
 
