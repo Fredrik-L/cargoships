@@ -11,9 +11,6 @@ public class CargoShip {
     private int [] position;// coordinates x y
     private int [] previousPosition;// coordinates x y
     private int [] startPosition;
-
-
-
     private int max_speed; //Knots
     private boolean inDock = true;
 
