@@ -32,8 +32,34 @@ public class SeaGrid {
     }
     public void placePortOnGrid(String grid [][], int coordinates[]) {
         grid[coordinates[0]][coordinates[1]] = "!!!";
+        grid[coordinates[0]+1][coordinates[1]] = "!!!";
+        grid[coordinates[0]+2][coordinates[1]] = "!!!";
     }
+
     public void placeShipOnGrid(String grid [][], int coordinates[]) {
+        if (grid[coordinates[0]][coordinates[1]] != "!!!")
         grid[coordinates[0]][coordinates[1]] = "SSS";
+    }
+    public void removeShipFromGrid(String grid [][], int coordinates[]) {
+        grid[coordinates[0]][coordinates[1]] = "~~~";
+    }
+    public final  void clearConsole() {
+        try
+        {
+            final String os = System.getProperty("os.name");
+
+            if (os.contains("Windows"))
+            {
+                Runtime.getRuntime().exec("cls");
+            }
+            else
+            {
+                Runtime.getRuntime().exec("clear");
+            }
+        }
+        catch (final Exception e)
+        {
+            //  Handle any exceptions.
+        }
     }
 }
