@@ -1,3 +1,6 @@
+import java.awt.event.KeyEvent;
+import java.security.Key;
+
 public class CargoShip {
     private int id;
     private String name;
@@ -8,7 +11,7 @@ public class CargoShip {
     private int cargoCapacity;//Tons
     private int fuelRemaining; //percent %
     private String bearing;
-    private int [] position;// coordinates x y
+    public int [] position;// coordinates x y
     private int max_speed; //Knots
 
 
@@ -116,7 +119,36 @@ public class CargoShip {
     public void unLoadCargo(int cargo) {
         setCargoOnBoard((getCargoOnBoard() - cargo));
     }
-}
+   //
+
+
+        public void moveShip(KeyEvent ke, CargoShip ship) {
+        if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
+          int [] currentPosition = {ship.getPosition()[0] - 1,ship.getPosition()[1]};
+          ship.setPosition(currentPosition);
+
+
+        }
+        if (ke.getKeyCode() == KeyEvent.VK_UP) {
+            int [] currentPosition = {getPosition()[0] + 1,getPosition()[1]};
+            setPosition(currentPosition);
+
+
+        }
+        if (ke.getKeyCode() == KeyEvent.VK_LEFT) {
+            int [] currentPosition = {ship.getPosition()[0] - 1,ship.getPosition()[1]};
+            ship.setPosition(currentPosition);
+
+        }
+        if (ke.getKeyCode() == KeyEvent.VK_RIGHT) {
+            int [] currentPosition = {ship.getPosition()[0] + 1,ship.getPosition()[1]};
+            ship.setPosition(currentPosition);
+
+        }
+        }
+
+    }
+
 
 
 
