@@ -44,7 +44,7 @@ public class Port {
 	// remove a ship from the ship list, when it lefts a port
 	public void dumpShipsFromPort(int shipId) {
 		this.shipsInPort--;
-		int removeValue = this.shipsId.indexOf(shipsId)
+		int removeValue = this.shipsId.indexOf(shipsId);
 		this.shipsId.remove(removeValue);
 	}
 	
@@ -58,7 +58,7 @@ public class Port {
 	}
 	
 	public void setPortPosition(int[] position) {
-		int[] copy = position.clone()
+		int[] copy = position.clone();
 		this.position = copy;
 	}
 }
