@@ -54,4 +54,84 @@ class Cargoships extends Ships{
 		this.setCargoUnits(cargoUnits);
 		System.out.println("Loaded: " + cargoUnits);
 	}
+	public void moveShipNorth() {
+
+		int[] destinationPosition = {getPosition()[0] - 1, getPosition()[1]};
+		setPosition(destinationPosition);
+		this.bearing = DIRECTION.N;
+	}
+	public  void moveShipNE() {
+
+		int[] destinationPosition = {getPosition()[0] - 1, getPosition()[1] + 1};
+		setPosition(destinationPosition);
+		this.bearing = DIRECTION.NE;
+	}
+
+	public void moveShipSouth() {
+		int[] destinationPosition = {getPosition()[0] + 1, getPosition()[1]};
+		setPreviousPosition(getPosition());
+		setPosition(destinationPosition);
+		this.bearing = DIRECTION.S;
+	}
+	public  void moveShipSE() {
+		int[] destinationPosition = {getPosition()[0] + 1, getPosition()[1] + 1};
+		setPosition(destinationPosition);
+		this.bearing = DIRECTION.SE;
+	}
+	public void moveShipWest() {
+		int[] destinationPosition = {getPosition()[0], getPosition()[1] -1};
+		setPreviousPosition(getPosition());
+		setPosition(destinationPosition);
+		this.bearing = DIRECTION.W;
+	}
+	public  void moveShipSW() {
+		int[] destinationPosition = {getPosition()[0] + 1, getPosition()[1] - 1};
+		setPosition(destinationPosition);
+		this.bearing = DIRECTION.SW;
+	}
+	public void moveShipEast() {
+		int[] destinationPosition = {getPosition()[0], getPosition()[1] + 1};
+		setPreviousPosition(getPosition());
+		setPosition(destinationPosition);
+		this.bearing = DIRECTION.E;
+	}
+	public  void moveShipNW() {
+
+		int[] destinationPosition = {getPosition()[0] - 1, getPosition()[1] - 1};
+		setPosition(destinationPosition);
+		this.bearing = DIRECTION.NW;
+	}
+
+	public void navigateToPort(int [] portPosition, int [] shipPosition ) {
+		if (portPosition[0] < shipPosition[0] && portPosition[1] < shipPosition[1]) {
+			moveShipNW();
+		}
+		if (portPosition[0] < shipPosition[0] && portPosition[1] > shipPosition[1]) {
+			moveShipNE();
+		}
+		if (portPosition[0] > shipPosition[0] && portPosition[1] > shipPosition[1]) {
+			moveShipSE();
+		}
+		if (portPosition[0] > shipPosition[0] && portPosition[1] < shipPosition[1]) {
+			moveShipSW();
+
+			if (portPosition[0] < shipPosition[0]) {
+				moveShipNorth();
+			} else if (portPosition[1] < shipPosition[1]) {
+				moveShipWest();
+			} else if (portPosition[1] > shipPosition[1]) {
+				moveShipEast();
+			} else if (portPosition[0] > shipPosition[0]) {
+				moveShipSouth();
+			}
+			if (portPosition == shipPosition) {
+				setInDock(true);
+
+			}
+
+		}
+
+
+	}
+}
 }
