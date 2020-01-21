@@ -31,6 +31,7 @@ class Cargoships extends Ships{
 		super(inDock, name, bearing, position, cruiseKnots, topKnots, id);
 		this.cargoCapacity = cargoCap;
 		this.cargoUnits = cargoUnits;
+		System.out.println("SKAPAT E CARGO");
 	}
 	public int getCargoCapacity() {
 		return this.cargoCapacity;
