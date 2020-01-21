@@ -33,6 +33,10 @@ public class Port {
 		this.cargoInPort += cargoWeight;
 	}
 	
+	public int getCargoInPort() {
+		return this.cargoInPort;
+	}
+	
 	// add a new anchored ship into the ship list at a port
 	public void addShipInDock(int shipId) {
 		this.shipsId.add(shipId);
