@@ -13,6 +13,30 @@ public class StartMenu {
 			e.printStackTrace();
 		} 
     }
+    static List<Cargoships> createShipsFromDb() {
+    	DatabaseHandler db = new DatabaseHandler();
+    	List<Cargoships> allCargoshipsObj = new ArrayList<Cargoships>();
+    	List<String> allShips = db.readAllDatabase();
+    	for(String ship: allShips) {
+    		String[] splittedString = ship.split(",");
+    		int id = Integer.parseInt(splittedString[0]);
+    		String name = splittedString[1];
+    		
+    		int x = Integer.parseInt(splittedString[2]);
+    		int y = Integer.parseInt(splittedString[3]);
+    		int[] pos = new int[2];
+    		pos[0] = x;
+    		pos[1] = y;
+    		String bearing = splittedString[4];
+    		int cruiseKnots = Integer.parseInt(splittedString[5]);
+    		int topKnots = Integer.parseInt(splittedString[6]);
+    		int cargoCapacity = Integer.parseInt(splittedString[7]);
+    		int cargoUnits = Integer.parseInt(splittedString[8]);
+    		Cargoships cargoShipObj = createCargoship(true,name,bearing, pos, cruiseKnots, topKnots, id, cargoCapacity, cargoUnits);
+    		allCargoshipsObj.add(cargoShipObj);
+    	}
+    	return allCargoshipsObj;
+    }
 	static int takeIntInput(String question, int biggestNmbr) {
 		Scanner s = new Scanner(System.in);
 		int answer;
@@ -58,18 +82,26 @@ public class StartMenu {
 	static Cargoships createCargoship(boolean inDock, String name, String bearing, int[] position, int cruiseKnots, int topKnots, int id, int cargoCap, int cargoUnits) {
 		Cargoships cargoship = new Cargoships(inDock, name, bearing, position, cruiseKnots, topKnots, id, cargoCap, cargoUnits);
 		return cargoship;
-		
+	}
+	static void printShips(String row) {
+		String[] splittedString = row.split(",", -1);
+		System.out.println(String.format("| %-4s| %-12s| %s,%-6s| %-8s| %-12s| %-9s| %-9s| %-6s|", splittedString[0],splittedString[1],splittedString[2],
+				splittedString[3],splittedString[4],splittedString[5],splittedString[6],splittedString[7],splittedString[8]));
 	}
 	public static void main(String[] args) {
 		
+
 		System.out.println("Welcome to the ShipSystem");
+	
+		
 		Scanner in = new Scanner(System.in);
 		DatabaseHandler db = new DatabaseHandler();
-		ArrayList<Cargoships> shipList = new ArrayList<Cargoships>();
+		
+		List<Cargoships> cargoshipsList = new ArrayList<Cargoships>();
+		cargoshipsList = createShipsFromDb();
 		boolean run = true;
     	while(run = true) {
 		int choice = takeIntInput("Choose your option\n (1)ADD BOAT\n (2)SEARCH SHIP\n (3)SHOW SHIP\n (4)ADD JOB\n (5)EXIT", 5);
-    	
         switch (choice){
             case 1:  
             	System.out.print("Add name: ");
@@ -111,7 +143,7 @@ public class StartMenu {
             	String[] tempArray = cargoshipInfo.split(",", -1);
             	int id = Integer.parseInt(tempArray[0]);
             	
-            	shipList.add(createCargoship(true, name, bearing, posArray, cruiseKnots, topKnots, id, cargoCapacity, cargoUnits));
+            	cargoshipsList.add(createCargoship(true, name, bearing, posArray, cruiseKnots, topKnots, id, cargoCapacity, cargoUnits));
             	System.out.println("Press enter to continue...");
                 in.nextLine();
             	break;
@@ -121,28 +153,51 @@ public class StartMenu {
             	System.out.println(shipInfo + "\nPress enter to continue...");
             	break;
             case 3:
-            	System.out.println("| ID |   NAME   | POS   | BEARING   | CRUISEKNOTS   | TOPKNOTS   | CARGOCAP   | UNITS");
+            	System.out.println("| ID  | NAME        | POS      | BEARING | CRUISEKNOTS | TOPKNOTS | CARGOCAP | UNITS |\n"
+            			+ "--------------------------------------------------------------------------------------");
             	List<String> allShips = db.readAllDatabase();
             	for(String ship: allShips) {
-            		String[] splittedString = ship.split(",", -1);
-            		System.out.println(String.format("| %s  |    %s  | %s | %s | %s | %s | %s | %s |", splittedString[0],splittedString[1],splittedString[2],
-            				splittedString[3],splittedString[4],splittedString[5],splittedString[6],splittedString[7],splittedString[7]));
+            		printShips(ship);
             	}
+            	System.out.println("--------------------------------------------------------------------------------------");
             	System.out.println("Press enter to continue...");
             	in.hasNextLine();
             	cls();
             	break;
             case 4:
             	boolean acceptedInpt = false;
+            	int chosenId = 0;
+            	String startPort = "";
 	            while(acceptedInpt == false) {
+	            	
+	            	System.out.println("Ports: Stockholm, Göteborg, Gdansk, Åbo, Öland.");
+	            	
 	            	System.out.println("From what port would you like to travel from: ");
-	            	String destinationPort = in.nextLine();
-	            	if(destinationPort.equalsIgnoreCase("x")) {
+	            	
+	            	startPort = in.nextLine();
+	            	if(startPort.equalsIgnoreCase("x")) {
 	            		acceptedInpt = true;
 	            	}
-	            	int shipsInPort = db.getShipsInPorts(destinationPort);
+	            	List<Integer> allShipsId = db.selectAvailableShips(startPort);
+	            	int shipsInPort = allShipsId.size();
+	            	System.out.println(shipsInPort);
 	            	if(shipsInPort >= 1) {
 	            		System.out.println(String.format("There is %s ships in this port!", shipsInPort));
+	            		int i = 1;
+	            		
+	            		for(int shipId: allShipsId) {
+	            			System.out.println(String.format("[%s]. %s ", i, shipId));
+	            			i ++;
+	            		}
+	            		int answerId = takeIntInput("What ship do you wanna use?", i - 1);
+	            		chosenId = allShipsId.get(answerId - 1);
+	            		System.out.println("detta id valde jag: " + chosenId);
+	            		String chosenShip = db.searchForShip(chosenId);
+
+	            		System.out.println("| ID  | NAME        | POS      | BEARING | CRUISEKNOTS | TOPKNOTS | CARGOCAP | UNITS |\n"
+	                			+ "--------------------------------------------------------------------------------------");
+	            		printShips(chosenShip);
+	            		System.out.println("-----------------------------------------------------------------------------------");
 	            		acceptedInpt = true;
 	            	}
 	            	else if(shipsInPort == 0) {
@@ -152,9 +207,22 @@ public class StartMenu {
 	            		System.out.println("Sorry we dont have that port.");
 	            	}
             	}
+	            int maxCargo = 0;
+	            for(Cargoships ship: cargoshipsList) {
+	            	if(ship.getId() == chosenId) {
+	            		maxCargo = ship.getCargoCapacity();
+	            		System.out.println(maxCargo);
+	            		break;
+	            	}
+	            }
+
+            	int currentCargoUnits = takeIntInput("How many cargo units do you want with you?", maxCargo);
+            	
             	
             	System.out.println("Where would you like to travel to: ");
-            	String TravelTo = in.nextLine();
+            	String destinationPort = in.nextLine();
+            	db.writeToTravelLog(chosenId, startPort, destinationPort);
+            	
             	//Decisions.OptionFour();
                 break;
             case 5:

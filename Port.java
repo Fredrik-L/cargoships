@@ -44,7 +44,7 @@ public class Port {
 	// remove a ship from the ship list, when it lefts a port
 	public void dumpShipsFromPort(int shipId) {
 		this.shipsInPort--;
-		int removeValue = this.shipsId.indexOf(shipsId);
+		int removeValue = this.shipsId.indexOf(shipId);
 		this.shipsId.remove(removeValue);
 	}
 	

@@ -11,10 +11,39 @@ import java.util.List;
 
 public class DatabaseHandler {
 
+	final private String url = "jdbc:mysql://localhost:3306/ships";
+	final String user = "fredde";
+	final String pw = "fredde";
+	
+	List<Integer> selectAvailableShips(String port) {
+		Connection c;
+		List<Integer> shipsId = new ArrayList<>();
+		try {
+			c = DriverManager.getConnection(url, user, pw);
+			Statement stmt = c.createStatement();
+			ResultSet rs;
+			
+			rs = stmt.executeQuery(String.format("SELECT id from ships.cargoships inner join ships.ports using (position) where ships.ports.name = '%s';", port));
+			
+			ResultSetMetaData metaData = rs.getMetaData();
+			int maxCol = metaData.getColumnCount();
+			
+			while(rs.next()) {
+				shipsId.add(rs.getInt(1));			
+			} 
+		}
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return shipsId;
+
+	}
+	
 	String selectLastShip() {
 		String row = "";
 		try {
-			Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/ships", "fredde", "fredde");
+			Connection c = DriverManager.getConnection(url, user, pw);
 			Statement stmt = c.createStatement();
 			ResultSet rs;
 			
@@ -37,7 +66,7 @@ public class DatabaseHandler {
 	}
 	void writeToDatabase(String name, String pos, String bearing, int cruiseKnots, int topKnots, int cargoCap, int cargoWeight){
 		try {
-			Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/ships", "fredde", "fredde");
+			Connection c = DriverManager.getConnection(url, user, pw);
 			
 			PreparedStatement p = c.prepareStatement("INSERT INTO ships.cargoships(NAME, POSITION, BEARING, CRUISEKNOTS, TOPKNOTS, CARGOCAPACITY, CARGOWEIGHT)" +
 			String.format("VALUES('%S','%S','%S','%S','%S','%S','%S')", name, pos, bearing, cruiseKnots, topKnots, cargoCap, cargoWeight));
@@ -51,7 +80,7 @@ public class DatabaseHandler {
 	List<String> readAllDatabase() {
 		List<String> allShips = new ArrayList<String>(); 
 		try {
-			Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/ships", "fredde", "fredde");
+			Connection c = DriverManager.getConnection(url, user, pw);
 			
 			Statement stmt = c.createStatement();
 			ResultSet rs;
@@ -80,7 +109,7 @@ public class DatabaseHandler {
 	String searchForShip(int id) {
 		String row = "";
 		try {
-			Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/ships", "fredde", "fredde");
+			Connection c = DriverManager.getConnection(url, user, pw);
 			
 			Statement stmt = c.createStatement();
 			ResultSet rs;
@@ -106,7 +135,7 @@ public class DatabaseHandler {
 	int getShipsInPorts(String portName) {
 		int shipsInPort = -1;
 		try {
-			Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/ships", "fredde", "fredde");
+			Connection c = DriverManager.getConnection(url, user, pw);
 			Statement stmt = c.createStatement();
 			ResultSet rs;
 			rs = stmt.executeQuery(String.format("SELECT * from ships.port WHERE PORTNAME = '%s'", portName));
@@ -120,5 +149,18 @@ public class DatabaseHandler {
 		}
 		return shipsInPort;
 		
+	}
+	void writeToTravelLog(int id, String startport, String destinationport ){
+		try {
+			Connection c = DriverManager.getConnection(url, user, pw);
+
+			PreparedStatement p = c.prepareStatement("INSERT INTO ships.travellog(SHIPID,STARTPORT,DESTINATIONPORT)"+
+			String.format("VALUES('%S','%S','%S')", id , startport, destinationport ));
+
+			p.execute();
+			c.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			}
 	}
 }
