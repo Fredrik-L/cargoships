@@ -23,7 +23,7 @@ public class DatabaseHandler {
 			Statement stmt = c.createStatement();
 			ResultSet rs;
 			
-			rs = stmt.executeQuery(String.format("SELECT id from ships.cargoships inner join ships.ports using (position) where ships.ports.name = '%s';", port));
+			rs = stmt.executeQuery(String.format("SELECT cargoships.id from ships.cargoships inner join ships.ports using (position) where ships.ports.name = '%s';", port));
 			
 			ResultSetMetaData metaData = rs.getMetaData();
 			int maxCol = metaData.getColumnCount();
@@ -163,4 +163,31 @@ public class DatabaseHandler {
 			e.printStackTrace();
 			}
 	}
+	List<String> readFromDb(String table){
+		List<String> allRows = new ArrayList<String>();
+		try {
+			Connection c = DriverManager.getConnection(url,user,pw);
+			Statement stmt = c.createStatement();
+			ResultSet rs;
+
+			rs = stmt.executeQuery(String.format("SELECT * FROM ships.%s;", table));
+			
+			ResultSetMetaData metaData = rs.getMetaData();
+			int maxCol = metaData.getColumnCount();
+			while(rs.next()) {
+				String row = "";
+				for(int i = 1; i <= maxCol; i++) {
+					row += rs.getString(i) + ",";
+				}
+				row = row.substring(0, row.length() - 1);
+				allRows.add(row);
+			}				
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+
+		}
+		return allRows;
+	}
+
 }

@@ -13,10 +13,35 @@ public class StartMenu {
 			e.printStackTrace();
 		} 
     }
+    static List<Port> createPortFromDb(){
+    	DatabaseHandler db = new DatabaseHandler();
+    	List<Port> allPorts = new ArrayList<Port>();
+    	
+    	List<String> allRows = db.readFromDb("ports");
+    	
+    	for(String port: allRows) {
+    		String[] splittedString = port.split(",");
+    		int id = Integer.parseInt(splittedString[0]);
+    		String name = splittedString[1];
+    		
+    		int cargo = Integer.parseInt(splittedString[2]);
+    		int ships = Integer.parseInt(splittedString[3]);
+    		int x = Integer.parseInt(splittedString[4]);
+    		int y = Integer.parseInt(splittedString[5]);
+    		int[] pos = new int[2];
+    		pos[0] = x;
+    		pos[1] = y;
+    		
+    		Port portObj = new Port(pos, cargo, ships, name, id);
+    		allPorts.add(portObj);
+    	}
+    	System.out.println(allPorts.size());
+    	return allPorts;
+    }
     static List<Cargoships> createShipsFromDb() {
     	DatabaseHandler db = new DatabaseHandler();
     	List<Cargoships> allCargoshipsObj = new ArrayList<Cargoships>();
-    	List<String> allShips = db.readAllDatabase();
+    	List<String> allShips = db.readFromDb("cargoships");
     	for(String ship: allShips) {
     		String[] splittedString = ship.split(",");
     		int id = Integer.parseInt(splittedString[0]);
@@ -96,7 +121,7 @@ public class StartMenu {
 		
 		Scanner in = new Scanner(System.in);
 		DatabaseHandler db = new DatabaseHandler();
-		
+		List<Port> portList = createPortFromDb();
 		List<Cargoships> cargoshipsList = new ArrayList<Cargoships>();
 		cargoshipsList = createShipsFromDb();
 		boolean run = true;
@@ -222,8 +247,29 @@ public class StartMenu {
             	System.out.println("Where would you like to travel to: ");
             	String destinationPort = in.nextLine();
             	db.writeToTravelLog(chosenId, startPort, destinationPort);
+            	int portIndex = -1;
+            	int cargoshipIndex = 0;
+            	int i = 0;
+            	for(Port p: portList) {
+            		if(p.getPortName().equalsIgnoreCase(destinationPort)) {
+            			portIndex = i; 
+             			break;
+            		}
+            		i++;
+            	}
             	
-            	//Decisions.OptionFour();
+            	int j = 0;
+            	for(Cargoships s: cargoshipsList) {
+            		if(s.getId() == chosenId) {
+            			cargoshipIndex = j;
+            			break;
+            		}
+            		j++;
+            	}
+            	System.out.println(portList.get(portIndex).getPortName());
+            	System.out.println(cargoshipsList.get(cargoshipIndex).getId());
+            	
+            	//Decisions.OptionFour(); 
                 break;
             case 5:
             	System.out.println("Goodbye!");

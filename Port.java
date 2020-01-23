@@ -3,20 +3,20 @@ package cargoships;
 import java.util.*;
 
 public class Port {
-	
+	private int id;
 	private String name;
 	private int[] position;  // Port position in the map
 	private int cargoInPort; // Total current cargo units in a port
 	private int shipsInPort; // No. of ships which already anchored in a port
-	private List<Integer> shipsId; // keeps a list of ship IDs which already located in a port
 	
 	//class constructor
-	public Port(int[] position) {
+	public Port(int[] position, int cargos, int ships, String name, int id) {
 		
+		this.id = id;
 		this.position = position;
-		this.cargoInPort = 0;
-		this.shipsInPort = 0;
-		this.shipsId = new ArrayList<Integer>();
+		this.cargoInPort = cargos;
+		this.shipsInPort = ships;
+		this.name = name;
 	}
 	
 	public void setPortName(String name) {
@@ -38,14 +38,14 @@ public class Port {
 	// add a new anchored ship into the ship list at a port
 	public void addShipInDock(int shipId) {
 		this.shipsInPort++;
-		this.shipsId.add(shipId);
+		//this.shipsId.add(shipId);
 	}
 	
 	// remove a ship from the ship list, when it lefts a port
-	public void dumpShipsFromPort(int shipId) {
+	public void dumpShipsFromPort() {
 		this.shipsInPort--;
-		int removeValue = this.shipsId.indexOf(shipId);
-		this.shipsId.remove(removeValue);
+		/*int removeValue = this.shipsId.indexOf(shipId);
+		this.shipsId.remove(removeValue);*/
 	}
 	
 	// Return the no. of ships which anchored in a port
